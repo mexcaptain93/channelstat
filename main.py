@@ -1,16 +1,32 @@
-# This is a sample Python script.
-
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
-
-
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
+from settings import settings
+from files import Filer
+from lineparser import LineParser
 
 
-# Press the green button in the gutter to run the script.
+class ChannelStat():
+    """Главный класс"""
+
+    def __init__(self):
+        self.filer = Filer()
+        self.events = self.get_events()
+        self.parser = LineParser()
+
+        for event in self.events:
+            channel = self.parser.parse(event)
+            if channel:
+                print(channel.get_info())
+
+
+    def get_events(self):
+        try:
+            channels = self.filer.readfile(settings.input_file)
+        except FileNotFoundError:
+            print(f'Нет такого файла {settings.input_file}')
+            return False
+
+        return channels
+
+
 if __name__ == '__main__':
-    print_hi('PyCharm')
+    app = ChannelStat()
 
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
