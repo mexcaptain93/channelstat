@@ -1,5 +1,5 @@
 from settings import settings
-from files import Filer
+from filer import Filer
 from lineparser import LineParser
 
 
@@ -16,13 +16,14 @@ class ChannelStat():
             if channel:
                 print(channel.get_info())
 
-
     def get_events(self):
         try:
             channels = self.filer.readfile(settings.input_file)
         except FileNotFoundError:
             print(f'Нет такого файла {settings.input_file}')
             return False
+
+        self.filer.writefile(settings.output_file)
 
         return channels
 

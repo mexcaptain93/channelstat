@@ -3,6 +3,8 @@ class Settings():
 
     def __init__(self):
         self.input_file = 'input.txt'
+        self.output_file = 'result.txt'
+
         self.up_markers = [
             'Установлено соединение с СТМ',
             ' работает	нет',
