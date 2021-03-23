@@ -11,10 +11,15 @@ class ChannelStat():
         self.events = self.get_events()
         self.parser = LineParser()
 
+        result = ''
+
         for event in self.events:
             channel = self.parser.parse(event)
+
             if channel:
-                print(channel.get_info())
+                result += channel.get_info() + '\n'
+
+        self.filer.writefile(settings.output_file, result)
 
     def get_events(self):
         try:
@@ -23,7 +28,6 @@ class ChannelStat():
             print(f'Нет такого файла {settings.input_file}')
             return False
 
-        self.filer.writefile(settings.output_file)
 
         return channels
 

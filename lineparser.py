@@ -1,37 +1,41 @@
 import re
 from datetime import datetime
 
-from channel import Channel
+from event import Event
 from settings import settings
 
 
 class LineParser():
     """Парсер строк"""
 
-    def __init__(self):
-        self.error = ''
-        self.line = ''
-
     def parse(self, line):
-        self.line = line
         self.error = ''
-        time = self._gettime()
-        name = 'Имя канала'
-        # name = self._getName()
+        self.line = line
+
+        regex_main = r"(?P<datetime>\d+\.\d+\.\d+ \d+\:\d+\:\d+)\t(?P<data>.+?)\t(?P<object>.+?)\t(?P<info2>.+?)\n"
+        regex_name = r"\((.*)\)"
+
+        match = re.search(regex_main, self.line, re.MULTILINE | re.IGNORECASE)
+
+        if match:
+            time = match.group('datetime')
+            object = match.group('object')
+
+            name_match = re.search(regex_name, match.group('data'))
+
+            if name_match:
+                name = name_match.group(1) # Без скобок
+        else:
+            self.error = f'Строка не обработана! {self.line}'
+
         status = self._getstatus()
 
         if self.error:
-            print(f'{self.line}\r Строка не обработана! {self.error.strip()}')
+            print(self.error)
             return False
 
-        return Channel(name, time, status)
+        return Event(name, time, status, object)
 
-    def _gettime(self):
-        time_str = re.search(r'\d{2}:\d{2}:\d{2}', self.line)
-        if time_str:
-            return time_str.group(0)
-        else:
-            self.error += 'Время не найдено! '
 
     def _getstatus(self):
         for up_maker in settings.up_markers:
