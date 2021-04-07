@@ -1,3 +1,5 @@
+
+from gui import GUI
 from settings import settings
 from filer import Filer
 from lineparser import LineParser
@@ -6,7 +8,13 @@ from lineparser import LineParser
 class ChannelStat():
     """Главный класс"""
 
-    def __init__(self):
+    def test_func(self):
+        s = ent.get()
+        s = s.split()
+        s.sort()
+        lab['text'] = ' '.join(s)
+
+    def calc(self, event):
         self.filer = Filer()
         self.events = self.get_events()
         self.parser = LineParser()
@@ -18,8 +26,13 @@ class ChannelStat():
 
             if channel:
                 result += channel.get_info() + '\n'
+                print(channel.get_info())
 
         self.filer.writefile(settings.output_file, result)
+
+
+
+
 
     def get_events(self):
         try:
@@ -35,3 +48,4 @@ class ChannelStat():
 if __name__ == '__main__':
     app = ChannelStat()
 
+    interface = GUI(app.calc)
